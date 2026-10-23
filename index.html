@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chispa</title>
+<meta name="description" content="Traducción con acento cultural entre español colombiano y francés de Quebec.">
+<meta name="theme-color" content="#1f3a93">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chispa">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<style>
+/* Layout: tarjeta de entrada con barra de idiomas arriba y la traducción debajo como página editorial. Azul de Quebec para la acción, hilo dorado de Colombia como único adorno. */
+:root {
+  --bg: #f4f5fa;
+  --surface: #ffffff;
+  --ink: #161b33;
+  --muted: #5a6082;
+  --line: #dde0ee;
+  --soft: #eceef8;
+  --accent: #1f3a93;
+  --accent-fg: #ffffff;
+  --gold: #c19a2b;
+  --ring: rgba(31, 58, 147, 0.28);
+  --shadow: 0 14px 34px -24px rgba(22, 27, 51, 0.45);
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1226;
+    --surface: #161c3a;
+    --ink: #eceefc;
+    --muted: #a1a8d0;
+    --line: #2a3262;
+    --soft: #212954;
+    --accent: #93a8ff;
+    --accent-fg: #0e1226;
+    --gold: #e0b64a;
+    --ring: rgba(147, 168, 255, 0.35);
+    --shadow: 0 14px 34px -24px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.55;
+  padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px));
+  padding-bottom: max(56px, calc(env(safe-area-inset-bottom, 0px) + 32px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+[hidden] { display: none !important; }
+.app { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+
+.head { display: flex; flex-direction: column; gap: 8px; }
+.mark { width: 44px; height: 3px; border-radius: 2px; background: var(--gold); }
+h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(2.6rem, 10vw, 3.6rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  margin: 6px 0 0;
+}
+.sub { margin: 0; color: var(--muted); max-width: 46ch; text-wrap: balance; }
+
+.label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sr { position: absolute; left: -9999px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+.card:focus-within { box-shadow: var(--shadow), 0 0 0 3px var(--ring); }
+
+.langbar { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.lang { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.lname { font-family: var(--font-display); font-size: 1.35rem; font-weight: 500; }
+.lreg { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.swap {
+  flex: none; width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--soft); color: var(--ink);
+  display: grid; place-items: center; cursor: pointer;
+}
+.swap:hover { border-color: var(--accent); }
+.swap svg { width: 20px; height: 20px; }
+
+.body { padding: 16px 20px 6px; display: flex; flex-direction: column; gap: 14px; }
+.audience { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.seg { display: inline-flex; padding: 3px; background: var(--soft); border-radius: 999px; }
+.seg button {
+  font: inherit; font-size: 0.88rem; font-weight: 600;
+  border: 0; border-radius: 999px; padding: 8px 16px; min-height: 36px;
+  background: transparent; color: var(--muted); cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px var(--ring); }
+
+textarea {
+  font-family: var(--font-display); font-size: clamp(1.3rem, 5vw, 1.6rem); line-height: 1.35;
+  color: var(--ink); background: transparent;
+  border: 0; outline: 0; resize: vertical; width: 100%; min-height: 110px; padding: 0;
+}
+textarea::placeholder { color: var(--muted); opacity: 0.75; font-style: italic; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips button {
+  font: inherit; font-size: 0.85rem; font-weight: 500;
+  border: 1px solid var(--line); background: transparent; color: var(--muted);
+  border-radius: 999px; padding: 5px 12px; cursor: pointer; text-align: left;
+}
+.chips button:hover { color: var(--ink); border-color: var(--muted); }
+
+.foot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 20px 16px; }
+.go {
+  font: inherit; font-weight: 600; font-size: 1rem;
+  background: var(--accent); color: var(--accent-fg);
+  border: 0; border-radius: 12px; padding: 12px 26px; min-height: 46px; cursor: pointer;
+}
+.go:disabled { opacity: 0.5; cursor: not-allowed; }
+.ghost {
+  font: inherit; font-weight: 600; font-size: 0.9rem;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; min-height: 40px; cursor: pointer;
+}
+.ghost:hover { border-color: var(--muted); }
+.hint { margin-left: auto; font-size: 0.8rem; color: var(--muted); }
+@media (hover: none) { .hint { display: none; } }
+.status { margin: 0; padding: 0 20px 14px; color: var(--muted); font-size: 0.92rem; }
+.status:empty { padding: 0; }
+.status.err { color: var(--ink); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+
+.clave { padding: 18px 20px; gap: 10px; }
+.clave p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.clave .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.clave input {
+  flex: 1; min-width: 180px; font: inherit; font-size: 1rem; color: var(--ink); background: var(--soft);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 44px;
+}
+
+.out {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+  padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow);
+}
+.outhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.tag { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+.orig { margin: 0; color: var(--muted); font-family: var(--font-display); font-style: italic; font-size: 1.1rem; overflow-wrap: anywhere; }
+.dst { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(1.9rem, 7.5vw, 2.6rem); line-height: 1.12; letter-spacing: -0.01em; text-wrap: balance; overflow-wrap: anywhere; }
+.pron { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.extra { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 4px; }
+.extra p { margin: 0; max-width: 62ch; }
+.alt { font-family: var(--font-display); font-size: 1.35rem; }
+
+.dots::after { content: "…"; display: inline-block; animation: blink 1s steps(3, end) infinite; }
+@keyframes blink { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { .dots::after { animation: none; } }
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="head">
+    <div class="mark" aria-hidden="true"></div>
+    <h1>Chispa</h1>
+    <p class="sub">Traducción con acento cultural. Lo que de verdad se diría, no palabra por palabra.</p>
+  </header>
+
+  <section class="card clave" id="clave-card" hidden aria-label="Clave de Chispa">
+    <span class="label">Clave de Chispa</span>
+    <p>Escribe la clave una sola vez. Queda guardada en este aparato.</p>
+    <form class="row" id="clave-form">
+      <label class="sr" for="clave-in">Clave</label>
+      <input id="clave-in" type="password" autocomplete="current-password" placeholder="Tu clave">
+      <button type="submit" class="go">Guardar</button>
+    </form>
+  </section>
+
+  <section class="card" aria-label="Traducir">
+    <div class="langbar">
+      <div class="lang"><span class="lname" id="from-name">Español</span><span class="lreg" id="from-reg">Colombia</span></div>
+      <button type="button" class="swap" id="swap" aria-label="Invertir idiomas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14M14 4l4 4-4 4"/><path d="M20 16H6M10 12l-4 4 4 4"/></svg>
+      </button>
+      <div class="lang"><span class="lname" id="to-name">Français</span><span class="lreg" id="to-reg">Québec</span></div>
+    </div>
+
+    <div class="body">
+      <div class="audience">
+        <span class="label">Tono</span>
+        <div class="seg" role="group" aria-label="Para quién es">
+          <button type="button" id="aud-adultos" aria-pressed="true">Adultos</button>
+          <button type="button" id="aud-ninos" aria-pressed="false">Niños de 7 a 12</button>
+        </div>
+      </div>
+      <label for="src" class="sr">Texto a traducir</label>
+      <textarea id="src" maxlength="600" placeholder="Escribe lo que quieres decir…"></textarea>
+      <div class="chips" id="chips" aria-label="Frases para probar"></div>
+    </div>
+
+    <div class="foot">
+      <button type="button" class="go" id="go">Traducir</button>
+      <button type="button" class="ghost" id="stop" hidden>Detener</button>
+      <span class="hint">Ctrl + Enter</span>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="out" id="result" aria-live="polite">
+    <div class="outhead">
+      <span class="label" id="lbl-dst">Français · Québec</span>
+      <span class="tag" id="example">Ejemplo</span>
+    </div>
+    <p class="orig" id="out-src"></p>
+    <p class="dst" id="out-dst"></p>
+    <p class="pron" id="pron" hidden></p>
+    <div class="tools">
+      <button type="button" class="ghost" id="speak" hidden>Escuchar</button>
+      <button type="button" class="ghost" id="copy">Copiar</button>
+    </div>
+    <div class="extra" id="note-card" hidden>
+      <span class="label">Matiz cultural</span>
+      <p id="note"></p>
+    </div>
+    <div class="extra" id="alt-card" hidden>
+      <span class="label">También se dice</span>
+      <p class="alt" id="alt"></p>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  var FN_URL = "https://rhevcaxruqqmjvajcatn.supabase.co/functions/v1/chispa";
+  var KEY_NAME = "chispa_clave";
+
+  var LANG = {
+    es: { name: "Español", reg: "Colombia", speak: "es-CO" },
+    fr: { name: "Français", reg: "Québec", speak: "fr-CA" }
+  };
+  var DIRS = {
+    "es-fr": {
+      from: "es", to: "fr",
+      placeholder: "Escribe lo que quieres decir…",
+      chips: ["mierda", "me da mucha pena", "qué chimba de partido", "estoy cansada, hoy no doy más"]
+    },
+    "fr-es": {
+      from: "fr", to: "es",
+      placeholder: "Écris ici ce que tu veux dire…",
+      chips: ["Ça va être le fun!", "Il fait frette dehors", "J'ai oublié ma tuque", "On va au dépanneur?"]
+    }
+  };
+
+  var EX_ADULT = {
+    src: "mierda",
+    data: {
+      traduccion: "Câlice!",
+      pronunciacion: "kalís",
+      nota: "En Quebec, cuando algo sale mal la gente suelta un «sacre»: groserías sacadas de la iglesia, como «câlice» o «tabarnak» (más fuerte). «Merde» también se entiende, pero suena más a Francia.",
+      otra_opcion: "Merde!"
+    }
+  };
+  var EX_KID = {
+    src: "mierda",
+    data: {
+      traduccion: "Zut!",
+      pronunciacion: "züt",
+      nota: "Decirla tal cual sería una grosería. Los niños en Quebec usan algo suave cuando algo les sale mal, como «Zut!», que es como decir «¡rayos!».",
+      otra_opcion: "Ah, ben non!"
+    }
+  };
+  var EX_FR = {
+    src: "Il fait frette dehors",
+    data: {
+      traduccion: "Afuera está haciendo un frío tremendo.",
+      pronunciacion: "",
+      nota: "«Frette» es la forma quebequense de decir «froid» (frío). Se oye todo el invierno.",
+      otra_opcion: "Qué frío hace afuera."
+    }
+  };
+
+  var dir = "es-fr";
+  var aud = "adultos";
+  var ctl = null;
+  var lastDst = "";
+  var resultDst = "fr";
+  var showingExample = true;
+  var clave = "";
+  try { clave = localStorage.getItem(KEY_NAME) || ""; } catch (e) { clave = ""; }
+
+  function setStatus(msg, isErr) {
+    var el = $("status");
+    el.textContent = msg || "";
+    el.classList.toggle("err", !!isErr);
+    el.classList.remove("dots");
+  }
+
+  function clean(v) { return typeof v === "string" ? v.trim() : ""; }
+
+  function renderChips() {
+    var box = $("chips");
+    box.textContent = "";
+    DIRS[dir].chips.forEach(function (t) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = t;
+      b.addEventListener("click", function () {
+        $("src").value = t;
+        $("src").focus();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function showResult(srcText, data, isExample, dstKey) {
+    showingExample = !!isExample;
+    resultDst = dstKey;
+    $("example").hidden = !isExample;
+    $("lbl-dst").textContent = LANG[dstKey].name + " · " + LANG[dstKey].reg;
+    $("out-src").textContent = "«" + srcText + "»";
+    lastDst = clean(data.traduccion);
+    $("out-dst").textContent = lastDst;
+    var pron = clean(data.pronunciacion);
+    $("pron").hidden = !pron;
+    $("pron").textContent = pron ? "Suena así: " + pron : "";
+    var note = clean(data.nota);
+    $("note-card").hidden = !note;
+    $("note").textContent = note;
+    var alt = clean(data.otra_opcion);
+    $("alt-card").hidden = !alt;
+    $("alt").textContent = alt;
+  }
+
+  function refreshExample() {
+    if (!showingExample) return;
+    if (dir === "fr-es") { showResult(EX_FR.src, EX_FR.data, true, "es"); return; }
+    var ex = aud === "ninos" ? EX_KID : EX_ADULT;
+    showResult(ex.src, ex.data, true, "fr");
+  }
+
+  function setDir(d) {
+    dir = d;
+    var f = LANG[DIRS[d].from], t = LANG[DIRS[d].to];
+    $("from-name").textContent = f.name;
+    $("from-reg").textContent = f.reg;
+    $("to-name").textContent = t.name;
+    $("to-reg").textContent = t.reg;
+    $("src").placeholder = DIRS[d].placeholder;
+    renderChips();
+    setStatus("");
+    refreshExample();
+  }
+
+  function setAud(a) {
+    aud = a;
+    $("aud-adultos").setAttribute("aria-pressed", String(a === "adultos"));
+    $("aud-ninos").setAttribute("aria-pressed", String(a === "ninos"));
+    refreshExample();
+  }
+
+  function askClave(msg) {
+    $("clave-card").hidden = false;
+    setStatus(msg || "", !!msg);
+    $("clave-in").focus();
+  }
+
+  function setBusy(b) {
+    $("go").disabled = b;
+    $("stop").hidden = !b;
+    if (b) {
+      var s = $("status");
+      s.textContent = "Traduciendo";
+      s.classList.remove("err");
+      s.classList.add("dots");
+    }
+  }
+
+  async function translate() {
+    var text = $("src").value.trim();
+    if (!text) { setStatus("Escribe algo primero.", true); return; }
+    if (!clave) { askClave("Primero escribe la clave de Chispa."); return; }
+    var d = dir;
+    ctl = new AbortController();
+    setBusy(true);
+    try {
+      var res = await fetch(FN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-chispa-clave": clave },
+        body: JSON.stringify({ texto: text, direccion: d, publico: aud }),
+        signal: ctl.signal
+      });
+      var data = null;
+      try { data = await res.json(); } catch (e) { data = null; }
+      if (res.status === 401) {
+        clave = "";
+        try { localStorage.removeItem(KEY_NAME); } catch (e) {}
+        askClave("La clave no coincide. Escríbela otra vez.");
+        return;
+      }
+      if (!res.ok || !data) {
+        setStatus((data && data.error) || "Algo falló. Prueba otra vez en un momento.", true);
+        return;
+      }
+      if (!clean(data.traduccion)) {
+        setStatus(clean(data.nota) || "Esa frase no se puede traducir para este público.", true);
+        return;
+      }
+      setStatus("");
+      showResult(text, data, false, DIRS[d].to);
+    } catch (e) {
+      if (e && e.name === "AbortError") { setStatus(""); }
+      else { setStatus("Sin conexión. Chispa necesita internet para traducir.", true); }
+    } finally {
+      setBusy(false);
+      ctl = null;
+    }
+  }
+
+  $("go").addEventListener("click", translate);
+  $("stop").addEventListener("click", function () { if (ctl) ctl.abort(); });
+  $("src").addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) { ev.preventDefault(); translate(); }
+  });
+  $("swap").addEventListener("click", function () { setDir(dir === "es-fr" ? "fr-es" : "es-fr"); });
+  $("aud-adultos").addEventListener("click", function () { setAud("adultos"); });
+  $("aud-ninos").addEventListener("click", function () { setAud("ninos"); });
+
+  $("clave-form").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var v = $("clave-in").value.trim();
+    if (!v) return;
+    clave = v;
+    try { localStorage.setItem(KEY_NAME, v); } catch (e) {}
+    $("clave-in").value = "";
+    $("clave-card").hidden = true;
+    setStatus("Clave guardada. Ya puedes traducir.");
+  });
+
+  if ("speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined") {
+    $("speak").hidden = false;
+    $("speak").addEventListener("click", function () {
+      if (!lastDst) return;
+      try {
+        var u = new SpeechSynthesisUtterance(lastDst);
+        u.lang = LANG[resultDst].speak;
+        u.rate = 0.9;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      } catch (err) { setStatus("Este aparato no puede leer en voz alta.", true); }
+    });
+  }
+
+  $("copy").addEventListener("click", function () {
+    if (!lastDst) return;
+    var done = function () { setStatus("Copiado."); };
+    var fail = function () { setStatus("No se pudo copiar. Selecciona el texto y cópialo a mano.", true); };
+    try { navigator.clipboard.writeText(lastDst).then(done, fail); } catch (err) { fail(); }
+  });
+
+  setDir("es-fr");
+  if (!clave) $("clave-card").hidden = false;
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+})();
+</script>
+</body>
+</html>
